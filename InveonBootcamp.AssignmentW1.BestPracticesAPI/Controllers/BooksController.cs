@@ -20,14 +20,15 @@ namespace InveonBootcamp.AssignmentW1.BestPracticesAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetBooks([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             const string cacheKey = "books";
             var cachedBooks = await _cachingService.GetAsync<List<BookDTO>>(cacheKey);
 
             if (cachedBooks != null)
             {
-                return Ok(cachedBooks);
+                var paginatedResult = Paginate(cachedBooks, page, pageSize);
+                return Ok(paginatedResult);
             }
 
             var books = _repository.GetAll();
@@ -43,8 +44,31 @@ namespace InveonBootcamp.AssignmentW1.BestPracticesAPI.Controllers
 
             var bookDTOs = books.Select(b => new BookDTO(b.Title, b.Author)).ToList();
             await _cachingService.SetAsync(cacheKey, bookDTOs, TimeSpan.FromMinutes(10));
-            return Ok(bookDTOs);
+
+            var result = Paginate(bookDTOs, page, pageSize);
+            return Ok(result);
         }
+
+        private object Paginate<T>(List<T> items, int page, int pageSize)
+        {
+            var totalItems = items.Count;
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var paginatedItems = items
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new
+            {
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = page,
+                PageSize = pageSize,
+                Items = paginatedItems
+            };
+        }
+
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)

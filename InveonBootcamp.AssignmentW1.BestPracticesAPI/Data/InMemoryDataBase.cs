@@ -10,7 +10,6 @@ namespace InveonBootcamp.AssignmentW1.BestPracticesAPI.Data
 
         public InMemoryDatabase()
         {
-            // Başlangıç verileri
             _books = new List<Book>
             {
                 new(1, "1984", "George Orwell"),

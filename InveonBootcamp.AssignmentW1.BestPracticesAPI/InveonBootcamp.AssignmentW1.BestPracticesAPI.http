@@ -1,0 +1,6 @@
+@InveonBootcamp.AssignmentW1.BestPracticesAPI_HostAddress = http://localhost:5164
+
+GET {{InveonBootcamp.AssignmentW1.BestPracticesAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,89 @@
+﻿
+/* Hero Section */
+.hero-section {
+    background-image: url('/images/hero-background.jpg'); /* Arka plan görseli */
+    background-size: cover;
+    background-position: center;
+    padding-top: 20vh;
+    text-align: center;
+    color: white;
+    position: relative;
+}
+
+/* Karartma efekti (isteğe bağlı) */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)); /* Karartma efekti */
+    z-index: 1;
+}
+
+/* İçerik */
+.hero-content {
+    position: relative;
+    z-index: 2; /* Karartmanın üstünde */
+    display: inline-block; /* Sadece içeriği kapsar */
+    margin: auto;
+    padding: 20px; /* İçerik çevresine boşluk */
+}
+
+.hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.hero-content .btn {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
+}
+
+/* Parallax Efekti */
+.hero-section.parallax {
+    background-attachment: fixed; /* Parallax efekti için sabit */
+}
+
+/* Kitap bölümü */
+#book-section {
+    padding: 60px 0;
+    background-color: #f8f9fa;
+}
+
+    #book-section .card {
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #book-section .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+/* İletişim Bölümü */
+#contact-section {
+    padding: 60px 0;
+}
+
+    #contact-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+
+    #contact-section p {
+        font-size: 1.2rem;
+    }
+
+/* Buton hover efekti */
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}

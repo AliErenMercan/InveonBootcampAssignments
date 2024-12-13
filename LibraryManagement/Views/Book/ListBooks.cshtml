@@ -1,0 +1,39 @@
+﻿@model IEnumerable<LibraryManagement.Models.DTOs.BookDTO>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Book List</h2>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Publication Year</th>
+                <th>ISBN</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                int index = 1;
+                foreach (var book in Model)
+                {
+                            <tr>
+                                <td>@index</td>
+                                <td>@book.Title</td>
+                                <td>@book.Author</td>
+                                <td>@book.PublicationYear</td>
+                                <td>@book.ISBN</td>
+                            </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                    <tr>
+                        <td colspan="5" class="text-center">No books found.</td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>

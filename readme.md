@@ -39,7 +39,7 @@ The database contains the following important tables:
 1. **Role Creation and Permission Management**:
    - Roles are created using the `RoleManager` class.
    - Permissions are assigned to roles through a **Role-Permission** relationship, allowing fine-grained control.
-   - A custom **`MinimumAgeAuthorize`** attribute is used for managing user permissions based on their roles and assigned permissions.
+   - A custom **`PermissionAuthorizeAttribute`** attribute is used for managing user permissions based on their roles and assigned permissions.
    
 2. **User-Role Assignment**:
    - Users can be assigned to roles, and roles can be updated or removed.

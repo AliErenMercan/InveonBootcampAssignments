@@ -17,14 +17,31 @@
         <h4 class="mt-4">Permissions</h4>
         @foreach (var permission in Model.Permissions)
         {
-                <div>
-                    <input type="checkbox" class="form-check-input" id="@permission.PermissionId" 
-                           name="Permissions[@Model.Permissions.IndexOf(permission)].IsAssigned" />
-                    <input type="hidden" name="Permissions[@Model.Permissions.IndexOf(permission)].PermissionId" value="@permission.PermissionId" />
-                    <label class="form-check-label" for="@permission.PermissionId">
-                        <strong>@permission.PermissionName</strong>: @permission.Description
-                    </label>
-                </div>
+                    <div>
+                            <input type="checkbox" class="form-check-input" 
+                                   id="@permission.PermissionId" 
+                                   name="Permissions[@Model.Permissions.IndexOf(permission)].IsAssigned" 
+                                   value="true" 
+                                   checked="@permission.IsAssigned" />
+
+                            <input type="hidden" 
+                                   name="Permissions[@Model.Permissions.IndexOf(permission)].PermissionId" 
+                                   value="@permission.PermissionId" />
+
+
+                            <input type="hidden" 
+                                    name="Permissions[@Model.Permissions.IndexOf(permission)].PermissionName" 
+                                    value="@permission.PermissionName" />
+
+
+                            <input type="hidden" 
+                                    name="Permissions[@Model.Permissions.IndexOf(permission)].Description" 
+                                    value="@permission.Description" />
+
+                            <label class="form-check-label" for="@permission.PermissionId">
+                                <strong>@permission.PermissionName</strong>: @permission.Description
+                            </label>
+                        </div>
         }
 
         <button type="submit" class="btn btn-primary mt-3">Create Role</button>

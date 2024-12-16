@@ -31,7 +31,7 @@ namespace LibraryManagement.Models.Repositories
 
         public async Task<List<Book>> GetAll()
         {
-            var books = await context.Books.ToListAsync(); // Tüm kitapları veritabanından getir
+            var books = await context.Books.ToListAsync();
             return books;
         }
 

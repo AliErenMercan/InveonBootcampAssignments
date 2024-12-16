@@ -8,7 +8,6 @@
     <h2 class="text-center mb-4">Update Role</h2>
 
     <form asp-action="UpdateRole" method="post">
-        <!-- Role Id -->
         <input type="hidden" asp-for="Id" />
 
         <div class="form-group">
@@ -26,7 +25,6 @@
             @foreach (var permission in Model.Permissions)
             {
                     <div>
-                        <!-- Checkbox for each permission -->
                         <input type="checkbox" class="form-check-input" 
                                id="@permission.PermissionId" 
                                name="Permissions[@Model.Permissions.IndexOf(permission)].IsAssigned" 

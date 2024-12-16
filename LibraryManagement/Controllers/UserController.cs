@@ -130,27 +130,26 @@ namespace LibraryManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccount()
         {
-            var user = await userManager.GetUserAsync(User); // Oturum açmış kullanıcıyı al
+            var user = await userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound(); // Kullanıcı bulunamazsa 404 döndür
+                return NotFound();
             }
 
-            var result = await userManager.DeleteAsync(user); // Kullanıcıyı sil
+            var result = await userManager.DeleteAsync(user);
             if (result.Succeeded)
             {
-                await signInManager.SignOutAsync(); // Kullanıcıyı oturumdan çıkart
+                await signInManager.SignOutAsync();
                 TempData["Message"] = "Your account has been deleted.";
-                return RedirectToAction("Login", "User"); // Giriş sayfasına yönlendir
+                return RedirectToAction("Login", "User");
             }
 
-            // Hataları ModelState'e ekle
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
 
-            return RedirectToAction("Settings"); // İşlem başarısızsa ayarlar sayfasına geri dön
+            return RedirectToAction("Settings");
         }
     }
 }

@@ -1,0 +1,32 @@
+﻿@model LibraryManagement.Models.AssignRoleViewModel
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Assign or Update Role</h2>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Message"]
+        </div>
+    }
+
+    <form asp-action="AssignRole" method="post">
+        <div class="form-group">
+            <label for="UserName">Username</label>
+            <input type="text" class="form-control" id="UserName" name="UserName" value="@Model.UserName" required />
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="SelectedRole">Select Role</label>
+            <select class="form-control" id="SelectedRole" name="SelectedRole">
+                <option value="">No Role</option>
+                @foreach (var role in Model.AvailableRoles)
+                {
+                        <option value="@role.Name">@role.Name</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+</div>

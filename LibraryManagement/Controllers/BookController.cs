@@ -13,7 +13,7 @@ namespace LibraryManagement.Controllers
         [HttpGet]
         public IActionResult ListBooks()
         {
-            var books = bookRepository.GetAllListDTO(); // Tüm kitapları getir
+            var books = bookRepository.GetAllListDTO();
             return View(books);
         }
 
@@ -24,7 +24,7 @@ namespace LibraryManagement.Controllers
             Book book = bookRepository.GetById(id).Result;
             if (book == null)
             {
-                return NotFound(); // Kitap bulunamazsa 404 döndür
+                return NotFound();
             }
             return View(book);
         }

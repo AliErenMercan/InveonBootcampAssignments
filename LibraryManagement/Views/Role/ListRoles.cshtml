@@ -24,7 +24,6 @@
                             <td>@role.Description</td>
                             <td>@role.Id</td>
                             <td>
-                                <!-- Edit Role butonu -->
                                 <a href="@Url.Action("UpdateRole", "Role", new { id = role.Id })" class="btn btn-warning btn-sm">Edit</a>
                                 <a href="@Url.Action("DeleteRole", "Role", new { id = role.Id })" class="btn btn-danger btn-sm">Delete</a>
                             </td>

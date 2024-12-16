@@ -20,10 +20,9 @@ namespace LibraryManagement.Models.Repositories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Ek model yapılandırmaları
             modelBuilder.Entity<Book>(entity =>
             {
-                entity.HasKey(e => e.Id); // Kitapların Primary Key'i
+                entity.HasKey(e => e.Id);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.Author).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.PublicationYear).IsRequired();
@@ -50,12 +49,10 @@ namespace LibraryManagement.Models.Repositories
                 .HasForeignKey(rp => rp.PermissionId);
 
             modelBuilder.Entity<Permission>().HasData(
-                new Permission
-                {
-                    Id = 1,
-                    PermissionName = "Viewer",
-                    Description = "Allows access to list books"
-                }
+                new Permission { Id = 1,PermissionName = "Viewer",Description = "Allows access to list books" },
+                new Permission { Id = 2, PermissionName = "Editor", Description = "Allows access to update books" },
+                new Permission { Id = 3, PermissionName = "Cleaner", Description = "Allows access to delete books" },
+                new Permission { Id = 4, PermissionName = "Producer", Description = "Allows access to add books" }
             );
         }
     }

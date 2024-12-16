@@ -17,10 +17,11 @@ namespace LibraryManagement.Models.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<BookDTO> GetAllDTO()
+        public IEnumerable<BookListDTO> GetAllListDTO()
         {
-            return context.Books.Select(book => new BookDTO
+            return context.Books.Select(book => new BookListDTO
             {
+                Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
                 PublicationYear = book.PublicationYear,
@@ -28,15 +29,16 @@ namespace LibraryManagement.Models.Repositories
             }).ToList();
         }
 
-        public Task<List<Book>> GetAll()
+        public async Task<List<Book>> GetAll()
         {
-            var books = context.Books.ToListAsync(); // Tüm kitapları veritabanından getir
+            var books = await context.Books.ToListAsync(); // Tüm kitapları veritabanından getir
             return books;
         }
 
-        public Task<Book> GetById(int id)
+        public async Task<Book> GetById(int id)
         {
-            throw new NotImplementedException();
+            Book book = await context.Books.FirstOrDefaultAsync(book => book.Id == id);
+            return book;
         }
 
         public Task<Book> Update(Book book)

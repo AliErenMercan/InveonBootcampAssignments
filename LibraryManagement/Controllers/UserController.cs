@@ -46,6 +46,7 @@ namespace LibraryManagement.Controllers
             return View();
         }
 
+        //CreateUser
         [HttpPost]
         public async Task<IActionResult> Register(string userName, string email, string password)
         {
@@ -77,6 +78,79 @@ namespace LibraryManagement.Controllers
             }
 
             return View();
+        }
+
+        //ReadUser
+        [HttpGet]
+        public async Task<IActionResult> Settings()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        //UpdateUser
+        [HttpPost]
+        public async Task<IActionResult> Settings(AppUser updatedUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(updatedUser);
+            }
+
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.Email = updatedUser.Email;
+            user.UserName = updatedUser.UserName;
+            user.PhoneNumber = updatedUser.PhoneNumber.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
+
+            var result = await userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                ViewBag.Message = "Profile updated successfully.";
+                return View(user);
+            }
+            
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var user = await userManager.GetUserAsync(User); // Oturum açmış kullanıcıyı al
+            if (user == null)
+            {
+                return NotFound(); // Kullanıcı bulunamazsa 404 döndür
+            }
+
+            var result = await userManager.DeleteAsync(user); // Kullanıcıyı sil
+            if (result.Succeeded)
+            {
+                await signInManager.SignOutAsync(); // Kullanıcıyı oturumdan çıkart
+                TempData["Message"] = "Your account has been deleted.";
+                return RedirectToAction("Login", "User"); // Giriş sayfasına yönlendir
+            }
+
+            // Hataları ModelState'e ekle
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            return RedirectToAction("Settings"); // İşlem başarısızsa ayarlar sayfasına geri dön
         }
     }
 }

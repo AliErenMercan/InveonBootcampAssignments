@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LibraryManagement.Models.DTOs.BookDTO>
+﻿@model IEnumerable<LibraryManagement.Models.DTOs.BookListDTO>
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Book List</h2>
@@ -10,6 +10,7 @@
                 <th>Author</th>
                 <th>Publication Year</th>
                 <th>ISBN</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +25,11 @@
                                 <td>@book.Author</td>
                                 <td>@book.PublicationYear</td>
                                 <td>@book.ISBN</td>
+                                <td>
+                                    <a href="@Url.Action("Details", "Book", new { id = book.Id })" class="btn btn-info btn-sm">
+                                        Details
+                                    </a>
+                                </td>
                             </tr>
                     index++;
                 }
@@ -31,7 +37,7 @@
             else
             {
                     <tr>
-                        <td colspan="5" class="text-center">No books found.</td>
+                        <td colspan="6" class="text-center">No books found.</td>
                     </tr>
             }
         </tbody>

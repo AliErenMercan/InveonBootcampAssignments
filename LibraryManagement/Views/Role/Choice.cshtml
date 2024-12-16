@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Admin Dashboard</h2>
+    <div class="list-group">
+        <a href="@Url.Action("CreateRole", "Role")" class="list-group-item list-group-item-action">➕ Create Role</a>
+        <a href="@Url.Action("ListRoles", "Role")" class="list-group-item list-group-item-action">📄 List Roles</a>
+        <a href="@Url.Action("ManageUserRoles", "Role")" class="list-group-item list-group-item-action">🎭 Manage User Roles</a>
+        <a href="@Url.Action("EditRole", "Role")" class="list-group-item list-group-item-action">✏ Edit Role</a>
+        <a href="@Url.Action("DeleteRole", "Role")" class="list-group-item list-group-item-action">🗑 Delete Role</a>
+    </div>
+</div>

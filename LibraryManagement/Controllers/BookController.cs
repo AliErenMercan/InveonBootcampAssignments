@@ -10,8 +10,18 @@ namespace LibraryManagement.Controllers
         [HttpGet]
         public IActionResult ListBooks()
         {
-            var books = bookRepository.GetAllDTO(); // Tüm kitapları getir
+            var books = bookRepository.GetAllListDTO(); // Tüm kitapları getir
             return View(books);
+        }
+
+        public IActionResult Details(int id)
+        {
+            Book book = bookRepository.GetById(id).Result;
+            if (book == null)
+            {
+                return NotFound(); // Kitap bulunamazsa 404 döndür
+            }
+            return View(book);
         }
     }
 }

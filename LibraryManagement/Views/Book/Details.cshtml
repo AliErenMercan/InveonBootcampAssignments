@@ -1,0 +1,24 @@
+﻿@model LibraryManagement.Models.Book
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Book Details</h2>
+    <div class="card mx-auto" style="max-width: 500px;">
+        <div class="card-header bg-dark text-white text-center">
+            <h4>@Model.Title</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Author:</strong> @Model.Author</p>
+            <p><strong>Publication Year:</strong> @Model.PublicationYear</p>
+            <p><strong>ISBN:</strong> @Model.ISBN</p>
+            <p><strong>Genre:</strong> @Model.Genre</p>
+            <p><strong>Publisher:</strong> @Model.Publisher</p>
+            <p><strong>Page Count:</strong> @Model.PageCount</p>
+            <p><strong>Language:</strong> @Model.Language</p>
+            <p><strong>Summary:</strong> @Model.Summary</p>
+            <p><strong>Available Copies:</strong> @Model.AvailableCopies</p>
+        </div>
+        <div class="card-footer text-center">
+            <a href="@Url.Action("ListBooks", "Book")" class="btn btn-primary">Back to List</a>
+        </div>
+    </div>
+</div>

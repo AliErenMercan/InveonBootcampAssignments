@@ -1,6 +1,6 @@
 ﻿namespace LibraryManagement.Models.DTOs
 {
-    public class BookDTO
+    public class BookListDTO
     {
         public int Id { get; set; } // Primary Key
         public string? Title { get; set; }

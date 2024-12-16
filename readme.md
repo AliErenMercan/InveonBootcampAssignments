@@ -2,6 +2,13 @@
 
 This is a library management system built using **ASP.Net Core MVC** and **SQL Server**. The project allows managing roles and permissions for users and provides role-based access control using **custom authorization attributes**.
 
+## Automatic Admin Account
+Upon first-time setup, an **admin account** is created automatically in the system. 
+
+### Admin Login Details:
+- **Username**: `admin`
+- **Password**: `AdminPassword123!`
+
 ## Technologies Used
 - **ASP.Net Core MVC**: Web application framework for building dynamic web apps.
 - **SQL Server**: Used as the database management system.
@@ -22,7 +29,6 @@ The database contains the following important tables:
 3. **Permissions**: Specific permissions (e.g., view, edit, delete books).
 4. **RolePermissions**: Linking table to establish the **many-to-many relationship** between roles and permissions.
 
-![Database Schema](https://via.placeholder.com/500x300?text=Database+Schema)
 
 ## Key Relationships
 - **User to Role**: One-to-many relationship (a user can have one role).
@@ -39,12 +45,6 @@ The database contains the following important tables:
    - Users can be assigned to roles, and roles can be updated or removed.
    - Permissions are granted dynamically based on role assignments.
 
-## Automatic Admin Account
-Upon first-time setup, an **admin account** is created automatically in the system. 
-
-### Admin Login Details:
-- **Username**: `admin`
-- **Password**: `AdminPassword123!`
 
 You can use this account to manage roles and permissions.
 

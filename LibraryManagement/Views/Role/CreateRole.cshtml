@@ -1,0 +1,32 @@
+﻿@model LibraryManagement.Models.RolePermissionViewModel
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Create Role</h2>
+
+    <form asp-action="CreateRole" method="post">
+        <div class="form-group">
+            <label for="roleName">Role Name</label>
+            <input type="text" class="form-control" id="roleName" name="RoleName" required />
+        </div>
+
+        <div class="form-group mt-4">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="Description" rows="3"></textarea>
+        </div>
+
+        <h4 class="mt-4">Permissions</h4>
+        @foreach (var permission in Model.Permissions)
+        {
+                <div>
+                    <input type="checkbox" class="form-check-input" id="@permission.PermissionId" 
+                           name="Permissions[@Model.Permissions.IndexOf(permission)].IsAssigned" />
+                    <input type="hidden" name="Permissions[@Model.Permissions.IndexOf(permission)].PermissionId" value="@permission.PermissionId" />
+                    <label class="form-check-label" for="@permission.PermissionId">
+                        <strong>@permission.PermissionName</strong>: @permission.Description
+                    </label>
+                </div>
+        }
+
+        <button type="submit" class="btn btn-primary mt-3">Create Role</button>
+    </form>
+</div>

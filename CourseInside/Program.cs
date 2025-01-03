@@ -1,5 +1,6 @@
 using CourseInside.Data;
 using CourseInside.Models;
+using CourseInside.RabbitMQ;
 using CourseInside.Repositories;
 using CourseInside.Services;
 using CourseInside.Utils;
@@ -11,7 +12,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -38,9 +38,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddScoped<ITokenHelper, JwtTokenHelper>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITokenHelper, JwtTokenHelper>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+
+
+builder.Services.AddSingleton<QueueManager>();
+builder.Services.AddSingleton<AnalyticsConsumer>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -57,6 +70,16 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var queueManager = scope.ServiceProvider.GetRequiredService<QueueManager>();
+    queueManager.SetupQueues();
+
+    var analyticsConsumer = scope.ServiceProvider.GetRequiredService<AnalyticsConsumer>();
+    analyticsConsumer.Consume("analytics_queue");
+}
 
 app.MapControllers();
 

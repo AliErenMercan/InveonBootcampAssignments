@@ -2,10 +2,11 @@
 using CourseInside.Models;
 using CourseInside.Utils;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Linq;
+using CourseInside.Repositories;
 
 namespace CourseInside.Services
 {
@@ -13,13 +14,13 @@ namespace CourseInside.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly ITokenHelper _tokenHelper;
-        private readonly ILogger<UserService> _logger;
+        private readonly IUserRepository _userRepository;
 
-        public UserService(UserManager<User> userManager, ITokenHelper tokenHelper, ILogger<UserService> logger)
+        public UserService( UserManager<User> userManager, ITokenHelper tokenHelper, IUserRepository userRepository)
         {
             _userManager = userManager;
             _tokenHelper = tokenHelper;
-            _logger = logger;
+            _userRepository = userRepository;
         }
 
         public async Task<ServiceResult> RegisterUserAsync(RegisterModel model)
@@ -40,8 +41,9 @@ namespace CourseInside.Services
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
-                _logger.LogWarning("User registration failed: {Errors}", string.Join(", ", result.Errors));
-                return ServiceResult.Failure("Registration failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                return ServiceResult.Failure(
+                    "Registration failed: " + string.Join(", ", result.Errors.Select(e => e.Description))
+                );
             }
 
             return ServiceResult.Success(user.Id);
@@ -52,7 +54,6 @@ namespace CourseInside.Services
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                _logger.LogWarning("Authentication failed for email: {Email}", model.Email);
                 return ServiceResult<TokenResult>.Failure("Invalid credentials");
             }
 
@@ -65,7 +66,6 @@ namespace CourseInside.Services
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                _logger.LogWarning("Password reset failed, user not found: {Email}", model.Email);
                 return ServiceResult.Failure("User not found");
             }
 
@@ -74,37 +74,90 @@ namespace CourseInside.Services
 
             if (!result.Succeeded)
             {
-                _logger.LogWarning("Password reset failed: {Errors}", string.Join(", ", result.Errors));
-                return ServiceResult.Failure("Password reset failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                return ServiceResult.Failure(
+                    "Password reset failed: " + string.Join(", ", result.Errors.Select(e => e.Description))
+                );
             }
 
             return ServiceResult.Success();
         }
 
-        public async Task<ServiceResult<UserProfile>> GetUserProfileAsync(ClaimsPrincipal user)
+        public async Task<ServiceResult<UserProfileDTO>> GetUserProfileAsync(ClaimsPrincipal user)
         {
             var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
             {
-                _logger.LogWarning("User profile access failed, user ID not found in claims");
-                return ServiceResult<UserProfile>.Failure("User not authenticated");
+                return ServiceResult<UserProfileDTO>.Failure("User not authenticated");
             }
 
-            var appUser = await _userManager.FindByIdAsync(userId);
+            var appUser = await _userRepository.GetUserWithOrdersAsync(userId);
             if (appUser == null)
             {
-                _logger.LogWarning("User profile access failed, user not found: {UserId}", userId);
-                return ServiceResult<UserProfile>.Failure("User not found");
+                return ServiceResult<UserProfileDTO>.Failure("User not found");
             }
 
-            var profile = new UserProfile
+            // Değişiklik: Artık "OrderItems" üzerinden kurs bilgisini alıyoruz
+            var purchasedCourses = appUser.Orders
+                .SelectMany(order => order.OrderItems, (order, orderItem) => new PurchasedCourseDTO
+                {
+                    CourseId = orderItem.CourseId,
+                    Title = orderItem.Course.Title,
+                    Price = orderItem.UnitPrice,
+                    PurchaseDate = order.OrderDate
+                })
+                .ToList();
+
+            var profile = new UserProfileDTO
             {
                 Name = appUser.Name!,
                 Email = appUser.Email!,
-                Role = appUser.Role!
+                Role = appUser.Role!,
+                PurchasedCourses = purchasedCourses
             };
 
-            return ServiceResult<UserProfile>.Success(profile);
+            return ServiceResult<UserProfileDTO>.Success(profile);
+        }
+
+        public async Task<ServiceResult> UpdateUserAsync(string userId, UpdateUserModelDTO model)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return ServiceResult.Failure("User not found");
+            }
+
+            // Sadece ismini ve rolünü güncelliyoruz (ihtiyaca göre genişletilebilir)
+            user.Name = model.Name;
+            user.Role = model.Role;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return ServiceResult.Failure(
+                    "User update failed: " + string.Join(", ", result.Errors.Select(e => e.Description))
+                );
+            }
+
+            return ServiceResult.Success("User updated successfully");
+        }
+
+        public async Task<ServiceResult> DeleteUserAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return ServiceResult.Failure("User not found");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return ServiceResult.Failure(
+                    "User deletion failed: " + string.Join(", ", result.Errors.Select(e => e.Description))
+                );
+            }
+
+            return ServiceResult.Success("User deleted successfully");
         }
 
         private bool IsValidEmail(string email)
@@ -112,18 +165,6 @@ namespace CourseInside.Services
             var emailRegex = new Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
             return emailRegex.IsMatch(email);
         }
-    }
 
-    public class TokenResult
-    {
-        public string Token { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
-    }
-
-    public class UserProfile
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
     }
 }

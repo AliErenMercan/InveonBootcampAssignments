@@ -9,5 +9,6 @@ namespace CourseInside.Repositories
         Task<bool> IsEmailExistAsync(string email);
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
+        Task<User?> GetUserWithOrdersAsync(string userId);
     }
 }

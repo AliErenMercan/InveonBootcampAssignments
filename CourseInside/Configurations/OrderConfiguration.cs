@@ -19,11 +19,7 @@ namespace CourseInside.Configurations
                    .HasForeignKey(o => o.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(o => o.Course)
-                   .WithMany(c => c.Orders)
-                   .HasForeignKey(o => o.CourseId)
-                   .OnDelete(DeleteBehavior.Cascade);
-
+            // Payment (1-1)
             builder.HasOne(o => o.Payment)
                    .WithOne(p => p.Order)
                    .HasForeignKey<Payment>(p => p.OrderId)

@@ -1,5 +1,6 @@
 ﻿using CourseInside.Models;
 using CourseInside.Repositories;
+using CourseInside.Utils;
 
 namespace CourseInside.Services
 {
@@ -47,6 +48,23 @@ namespace CourseInside.Services
         {
             await _repository.DeleteCourseAsync(id);
             return ServiceResult.Success("Course deleted successfully");
+        }
+
+        public async Task<ServiceResult<PagedResult<Course>>> SearchCoursesAsync(string? keyword, int pageNumber, int pageSize)
+        {
+            var (courses, totalCount) = await _repository.SearchCoursesAsync(
+                keyword, pageNumber, pageSize
+            );
+
+            var pagedResult = new PagedResult<Course>
+            {
+                Items = courses,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
+
+            return ServiceResult<PagedResult<Course>>.Success(pagedResult);
         }
     }
 }

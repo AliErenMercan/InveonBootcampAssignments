@@ -19,8 +19,9 @@ namespace CourseInside.Repositories
         {
             return await _context.Orders
                 .Include(o => o.User)
-                .Include(o => o.Course)
                 .Include(o => o.Payment)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Course)
                 .ToListAsync();
         }
 
@@ -28,8 +29,9 @@ namespace CourseInside.Repositories
         {
             return await _context.Orders
                 .Include(o => o.User)
-                .Include(o => o.Course)
                 .Include(o => o.Payment)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Course)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 

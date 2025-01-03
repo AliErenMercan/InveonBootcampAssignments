@@ -72,6 +72,53 @@ namespace CourseInside.Controllers
 
             return Ok(result.data);
         }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserModelDTO model)
+        {
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = User.IsInRole("Admin");
+
+            // Eğer admin değil ve kendi Id'sine de eşit değilse, güncelleme izni yok
+            if (!isAdmin && currentUserId != id)
+            {
+                return Forbid(); // veya return Unauthorized("You cannot update another user.");
+            }
+
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            var result = await _userService.UpdateUserAsync(id, model);
+            if (!result.success)
+            {
+                return BadRequest(new { Error = result.message });
+            }
+
+            return Ok(new { Message = result.message });
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = User.IsInRole("Admin");
+
+            // Eğer admin değil ve kendi Id'sine de eşit değilse, silme izni yok
+            if (!isAdmin && currentUserId != id)
+            {
+                return Forbid(); // veya return Unauthorized("You cannot delete another user.");
+            }
+
+            var result = await _userService.DeleteUserAsync(id);
+            if (!result.success)
+            {
+                return BadRequest(new { Error = result.message });
+            }
+
+            return Ok(new { Message = result.message });
+        }
     }
 
 

@@ -9,5 +9,6 @@ namespace CourseInside.Services
         Task<ServiceResult> AddOrderAsync(Order order);
         Task<ServiceResult> UpdateOrderAsync(Order order);
         Task<ServiceResult> DeleteOrderAsync(int id);
+        Task<ServiceResult<decimal>> CheckoutCartAsync(string userId);
     }
 }

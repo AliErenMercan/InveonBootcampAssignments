@@ -8,3 +8,4 @@ microsoft.aspnetcore.authentication.jwtbearer 8.0.0
 microsoft.entityframeworkcore.tools 8.0.0
 erlang v26.2.5.5
 rabbitmq v4.0.3
+RabbitMQ.Client 6.4.0

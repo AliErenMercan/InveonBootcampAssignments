@@ -74,5 +74,21 @@ namespace CourseInside.Controllers
 
             return Ok(new { Message = result.message });
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(
+        [FromQuery] string? keyword,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10)
+        {
+            var result = await _service.SearchCoursesAsync(keyword, pageNumber, pageSize);
+            if (!result.success)
+            {
+                return BadRequest(new { Error = result.message });
+            }
+
+            // result.data -> PagedResult<Course>
+            return Ok(result.data);
+        }
     }
 }

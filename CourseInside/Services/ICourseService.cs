@@ -1,4 +1,5 @@
 ﻿using CourseInside.Models;
+using CourseInside.Utils;
 
 namespace CourseInside.Services
 {
@@ -9,5 +10,6 @@ namespace CourseInside.Services
         Task<ServiceResult> AddCourseAsync(Course course);
         Task<ServiceResult> UpdateCourseAsync(Course course);
         Task<ServiceResult> DeleteCourseAsync(int id);
+        Task<ServiceResult<PagedResult<Course>>> SearchCoursesAsync(string? keyword, int pageNumber, int pageSize);
     }
 }

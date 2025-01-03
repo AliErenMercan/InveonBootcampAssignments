@@ -1,4 +1,5 @@
-﻿using CourseInside.Models;
+﻿using CourseInside.Configurations;
+using CourseInside.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,38 +13,22 @@ namespace CourseInside.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Course>()
-                .Property(c => c.Price)
-                .HasColumnType("decimal(18,4)");
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new CartConfiguration());
+            modelBuilder.ApplyConfiguration(new CartItemConfiguration());
+            modelBuilder.ApplyConfiguration(new CourseConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
+            modelBuilder.ApplyConfiguration(new PaymentConfiguration());
 
-            modelBuilder.Entity<Payment>()
-                .Property(p => p.Amount)
-                .HasColumnType("decimal(18,4)");
-
-            modelBuilder.Entity<Order>()
-               .HasOne(o => o.User)
-               .WithMany(u => u.Orders)
-               .HasForeignKey(o => o.UserId)
-               .IsRequired();
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Course)
-                .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.CourseId);
-
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.Order)
-                .WithOne(o => o.Payment)
-                .HasForeignKey<Payment>(p => p.OrderId);
-
-
-
-            // Seed Users
             var adminUser = new User
             {
                 Id = "1",
@@ -77,7 +62,7 @@ namespace CourseInside.Data
             modelBuilder.Entity<User>().HasData(adminUser, teacherUser, regularUser);
 
             // Seed Courses
-            var courses = Enumerable.Range(1, 15).Select(i => new Course
+            var courses = Enumerable.Range(1, 5).Select(i => new Course
             {
                 Id = i,
                 Title = $"Course {i}",
@@ -87,33 +72,6 @@ namespace CourseInside.Data
             }).ToArray();
 
             modelBuilder.Entity<Course>().HasData(courses);
-
-            // Seed Orders and Payments
-            var orders = new List<Order>
-            {
-                new Order { Id = 1, UserId = "1", CourseId = 1, OrderDate = DateTime.UtcNow },
-                new Order { Id = 2, UserId = "1", CourseId = 2, OrderDate = DateTime.UtcNow },
-                new Order { Id = 3, UserId = "1", CourseId = 3, OrderDate = DateTime.UtcNow },
-
-                new Order { Id = 4, UserId = "3", CourseId = 4, OrderDate = DateTime.UtcNow },
-                new Order { Id = 5, UserId = "3", CourseId = 5, OrderDate = DateTime.UtcNow },
-                new Order { Id = 6, UserId = "3", CourseId = 6, OrderDate = DateTime.UtcNow },
-                new Order { Id = 7, UserId = "3", CourseId = 7, OrderDate = DateTime.UtcNow },
-                new Order { Id = 8, UserId = "3", CourseId = 8, OrderDate = DateTime.UtcNow }
-            };
-
-            modelBuilder.Entity<Order>().HasData(orders);
-
-            var payments = orders.Select(o => new Payment
-            {
-                Id = o.Id,
-                OrderId = o.Id,
-                Amount = courses.First(c => c.Id == o.CourseId).Price,
-                PaymentStatus = "Completed",
-                PaymentDate = DateTime.UtcNow
-            }).ToArray();
-
-            modelBuilder.Entity<Payment>().HasData(payments);
         }
     }
 }

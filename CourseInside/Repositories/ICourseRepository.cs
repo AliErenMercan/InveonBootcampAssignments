@@ -9,5 +9,6 @@ namespace CourseInside.Repositories
         Task AddCourseAsync(Course course);
         Task UpdateCourseAsync(Course course);
         Task DeleteCourseAsync(int id);
+        Task<(List<Course> Courses, int TotalCount)> SearchCoursesAsync(string? keyword, int pageNumber, int pageSize);
     }
 }

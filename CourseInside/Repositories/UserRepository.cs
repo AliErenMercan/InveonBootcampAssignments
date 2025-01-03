@@ -38,5 +38,14 @@ namespace CourseInside.Repositories
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<User?> GetUserWithOrdersAsync(string userId)
+        {
+            return await _context.Users
+                .Include(u => u.Orders)
+                .ThenInclude(order => order.OrderItems)
+                .ThenInclude(orderItem => orderItem.Course)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using CourseInside.Data;
 using CourseInside.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CourseInside.Repositories
 {
@@ -19,9 +17,10 @@ namespace CourseInside.Repositories
         {
             return await _context.Payments
                 .Include(p => p.Order)
-                .ThenInclude(o => o.User)
+                    .ThenInclude(o => o.User)
                 .Include(p => p.Order)
-                .ThenInclude(o => o.Course)
+                    .ThenInclude(o => o.OrderItems)
+                        .ThenInclude(oi => oi.Course)
                 .ToListAsync();
         }
 
@@ -29,9 +28,10 @@ namespace CourseInside.Repositories
         {
             return await _context.Payments
                 .Include(p => p.Order)
-                .ThenInclude(o => o.User)
+                    .ThenInclude(o => o.User)
                 .Include(p => p.Order)
-                .ThenInclude(o => o.Course)
+                    .ThenInclude(o => o.OrderItems)
+                        .ThenInclude(oi => oi.Course)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 

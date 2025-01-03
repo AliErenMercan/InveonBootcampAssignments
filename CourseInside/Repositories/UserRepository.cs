@@ -1,6 +1,8 @@
 ﻿using CourseInside.Data;
 using CourseInside.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CourseInside.Repositories
 {
@@ -15,21 +17,25 @@ namespace CourseInside.Repositories
 
         public async Task<User?> GetUserByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Users
+                .Include(u => u.Orders)
+                .FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<User?> GetUserByIdAsync(string id)
+        public async Task<bool> IsEmailExistAsync(string email)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users.AnyAsync(u => u.Email == email);
         }
 
         public async Task AddUserAsync(User user)
         {
             await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task SaveChangesAsync()
+        public async Task UpdateUserAsync(User user)
         {
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
     }

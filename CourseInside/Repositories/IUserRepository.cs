@@ -1,12 +1,13 @@
 ﻿using CourseInside.Models;
+using System.Threading.Tasks;
 
 namespace CourseInside.Repositories
 {
     public interface IUserRepository
     {
         Task<User?> GetUserByEmailAsync(string email);
-        Task<User?> GetUserByIdAsync(string id);
+        Task<bool> IsEmailExistAsync(string email);
         Task AddUserAsync(User user);
-        Task SaveChangesAsync();
+        Task UpdateUserAsync(User user);
     }
 }

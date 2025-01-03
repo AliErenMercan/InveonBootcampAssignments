@@ -1,11 +1,14 @@
-﻿using CourseInside.Models;
+﻿using CourseInside.Controllers;
+using CourseInside.Models;
+using System.Security.Claims;
 
 namespace CourseInside.Services
 {
     public interface IUserService
     {
-        Task<User?> LoginAsync(string email, string password);
-        Task RegisterAsync(User user, string password);
-        Task<User?> GetUserByIdAsync(string id);
+        Task<ServiceResult> RegisterUserAsync(RegisterModel model);
+        Task<ServiceResult<TokenResult>> AuthenticateUserAsync(LoginModel model);
+        Task<ServiceResult> ResetPasswordAsync(ResetPasswordModel model);
+        Task<ServiceResult<UserProfile>> GetUserProfileAsync(ClaimsPrincipal user);
     }
 }

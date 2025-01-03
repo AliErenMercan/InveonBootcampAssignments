@@ -1,4 +1,5 @@
-﻿namespace CourseInside.Models
+﻿
+namespace CourseInside.Models
 {
     public class Payment
     {

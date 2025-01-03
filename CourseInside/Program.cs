@@ -2,6 +2,7 @@ using CourseInside.Data;
 using CourseInside.Models;
 using CourseInside.Repositories;
 using CourseInside.Services;
+using CourseInside.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenHelper, JwtTokenHelper>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

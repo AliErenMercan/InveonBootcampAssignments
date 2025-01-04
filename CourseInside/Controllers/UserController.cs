@@ -1,6 +1,8 @@
-﻿using CourseInside.Services;
+﻿using CourseInside.RabbitMQ;
+using CourseInside.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CourseInside.Controllers
 {
@@ -9,10 +11,12 @@ namespace CourseInside.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly QueueManager _queueManager;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, QueueManager queueManager)
         {
             _userService = userService;
+            _queueManager = queueManager;
         }
 
         [HttpPost("register")]
@@ -26,6 +30,14 @@ namespace CourseInside.Controllers
             {
                 return BadRequest(new { Error = result.message });
             }
+
+            // Notification for user registration
+            var notificationMessage = new
+            {
+                UserId = result.message,
+                Message = "Welcome to CourseInside! Your account has been created successfully."
+            };
+            _queueManager.PublishMessage("notification_exchange", "", notificationMessage);
 
             return Ok(new { Message = "User registered successfully", UserId = result.message });
         }
@@ -95,6 +107,14 @@ namespace CourseInside.Controllers
                 return BadRequest(new { Error = result.message });
             }
 
+            // Notification for user update
+            var notificationMessage = new
+            {
+                UserId = id,
+                Message = "Your profile information has been updated successfully."
+            };
+            _queueManager.PublishMessage("notification_exchange", "", notificationMessage);
+
             return Ok(new { Message = result.message });
         }
 
@@ -121,24 +141,41 @@ namespace CourseInside.Controllers
         }
     }
 
-
     public class RegisterModel
     {
+        [Required]
+        [StringLength(100)]
         public string Name { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [MinLength(6)]
         public string Password { get; set; } = string.Empty;
+
         public string Role { get; set; } = "User";
     }
 
     public class LoginModel
     {
+        [Required]
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
+
+        [Required]
         public string Password { get; set; } = string.Empty;
     }
 
     public class ResetPasswordModel
     {
+        [Required]
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [MinLength(6)]
         public string NewPassword { get; set; } = string.Empty;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CourseInside.Data;
 using CourseInside.Models;
+using CourseInside.RabbitMQ;
 using CourseInside.Repositories;
 
 namespace CourseInside.Services
@@ -9,14 +10,17 @@ namespace CourseInside.Services
         private readonly ICartRepository _cartRepository;
         private readonly ICourseRepository _courseRepository;
         private readonly ILogger<CartService> _logger;
+        private readonly QueueManager _queueManager;
 
         public CartService(ICartRepository cartRepository,
                            ICourseRepository courseRepository,
-                           ILogger<CartService> logger)
+                           ILogger<CartService> logger,
+                           QueueManager queueManager)
         {
             _cartRepository = cartRepository;
             _courseRepository = courseRepository;
             _logger = logger;
+            _queueManager = queueManager;
         }
 
         public async Task<ServiceResult<Cart>> GetOrCreateCartAsync(string userId)
@@ -42,6 +46,21 @@ namespace CourseInside.Services
             var course = await _courseRepository.GetCourseByIdAsync(courseId);
             if (course == null)
                 return ServiceResult<Cart>.Failure("Course not found");
+
+            // Aynı kursun var olup olmadığını kontrol edelim
+            var existingCartItem = cart.CartItems.FirstOrDefault(ci => ci.CourseId == courseId);
+            if (existingCartItem != null)
+            {
+                // Notification oluştur ve RabbitMQ'ya gönder
+                var notificationMessage = new
+                {
+                    UserId = userId,
+                    Message = $"The course '{course.Title}' is already in your cart."
+                };
+                _queueManager.PublishMessage("notification_exchange", "", notificationMessage);
+
+                return ServiceResult<Cart>.Failure("This course is already in your cart.");
+            }
 
             var cartItem = new CartItem
             {

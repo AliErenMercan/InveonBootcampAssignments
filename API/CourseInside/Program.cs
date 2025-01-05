@@ -1,5 +1,4 @@
 using CourseInside.Data;
-using CourseInside.RabbitMQ;
 using CourseInside.Repositories;
 using CourseInside.Services;
 using CourseInside.Utils;
@@ -46,7 +45,6 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddSingleton<QueueManager>();
 builder.Services.AddScoped<ITokenHelper, JwtTokenHelper>();
 
 builder.Services.AddControllers();

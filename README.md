@@ -1,7 +1,7 @@
 # CourseInside - Kurs Satış Sistemi
 Bu proje, basit bir kurs satış sistemi örneği içermektedir. **API** için ".NET 8.0" **Arayüz** için "React" Kullanılmıştır.
 
-## Sistem'in Mimarisi
+# Sistem'in Mimarisi
 ```mermaid
 flowchart TB
     subgraph React
@@ -275,7 +275,14 @@ Kurs başarıyla satın alındı
 
 ---
 
-Bu dökümantasyon, CourseInside platformundaki kullanıcı, kurs, sipariş ve ödeme işlemlerini yönetmek için gerekli olan API uç noktalarının kapsamlı bir özetini sunar. Gerektiğinde ek uç noktalar ve detaylar eklenebilir.
 
+# Gereklilikler ve Versiyonlar
 
-
+.Net Core 8.0
+microsoft.entityframeworkcore 8.0.0
+microsoft.entityframeworkcore.sqlserver 8.0.0
+swashbuckle.aspnetcore 6.6.2
+microsoft.aspnetcore.identity.entityframeworkcore 8.0.0
+microsoft.entityframeworkcore.relational 8.0.0
+microsoft.aspnetcore.authentication.jwtbearer 8.0.0
+microsoft.entityframeworkcore.tools 8.0.0

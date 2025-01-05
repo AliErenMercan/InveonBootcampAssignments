@@ -1,5 +1,6 @@
 ﻿using CourseInside.Models;
 using CourseInside.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CourseInside.Controllers
@@ -45,6 +46,7 @@ namespace CourseInside.Controllers
             return Ok(result.Data);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddCourse([FromBody] Course course)
         {
@@ -55,6 +57,7 @@ namespace CourseInside.Controllers
             return Ok(result.Message);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCourse(int id, [FromBody] Course course)
         {
@@ -66,6 +69,7 @@ namespace CourseInside.Controllers
             return Ok(result.Message);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(int id)
         {

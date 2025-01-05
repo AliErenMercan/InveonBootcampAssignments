@@ -6,13 +6,15 @@ Bu proje, basit bir kurs satış sistemi örneği içermektedir. **API** için "
 flowchart TB
     subgraph React
     UI["React Components"]
-    ContextAPI["React Context API \n(State Management)"]
+    ContextAPI["React Context API 
+    (State Management)"]
     UI --> ContextAPI
     end
 
     subgraph API
-    Controller["ASP.NET Core Controllers \n(JWT Auth)"]
-    ServiceLayer["Service Layer \n(Business Logic + MemoryCache)"]
+    Controller["ASP.NET Core Controllers (JWT Auth)"]
+    ServiceLayer["Service Layer 
+    (Business Logic)"]
     RepositoryLayer["Repository Layer"]
     end
 

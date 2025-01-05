@@ -279,10 +279,17 @@ Kurs başarıyla satın alındı
 # Gereklilikler ve Versiyonlar
 
 .Net Core 8.0
+
 microsoft.entityframeworkcore 8.0.0
+
 microsoft.entityframeworkcore.sqlserver 8.0.0
+
 swashbuckle.aspnetcore 6.6.2
+
 microsoft.aspnetcore.identity.entityframeworkcore 8.0.0
+
 microsoft.entityframeworkcore.relational 8.0.0
+
 microsoft.aspnetcore.authentication.jwtbearer 8.0.0
+
 microsoft.entityframeworkcore.tools 8.0.0
